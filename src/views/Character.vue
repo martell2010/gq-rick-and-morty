@@ -1,5 +1,5 @@
 <template>
-  <el-row v-loading.lock="loading">
+  <el-row v-loading.lock="$apollo.loading">
     <el-page-header
       title="To list"
       :content="character.name"
@@ -58,11 +58,8 @@
   </el-row>
 </template>
 <script>
-import { GraphQLApi } from '@/api/main'
 import EpisodesTable from '@/components/character/EpisodesTable.vue'
 import { characterQuery } from '@/graphql/query/character.gql'
-import { print } from 'graphql/language/printer'
-import { apiErrorHandler } from '@/utils/helpers/apiErrorHandler'
 
 export default {
   components: {
@@ -71,42 +68,31 @@ export default {
   data () {
     return {
       character: {},
+      id: null,
       loading: false
     }
   },
   watch: {
     '$route.params.id': {
       handler (newId) {
-        this.fetchData(newId)
+        this.id = newId
       },
       immediate: true
     }
   },
-  methods: {
-    async fetchData (id) {
-      this.loading = true
-      try {
-        const { data } = await GraphQLApi.request({
-          query: print(characterQuery),
-          variables: {
-            id
-          }
-        })
-
-        if (data.errors) {
-          apiErrorHandler.call(this, data.errors)
-          this.character = {}
-          return false
-        }
-
-        const { character } = data.data
-        this.character = character
-      } catch (error) {
-        console.log('error', error)
-      } finally {
-        this.loading = false
+  apollo: {
+    character: {
+      query: characterQuery,
+      variables () {
+        return { id: this.id }
+      },
+      error (error) {
+        console.log('error', { error })
+        this.goBack()
       }
-    },
+    }
+  },
+  methods: {
     goBack () {
       this.$router.push({ name: 'Home' })
     }

@@ -1,8 +1,14 @@
 <template>
   <router-link :to="{name: 'Character', params: {id: id} }">
-      <slot>
-        <el-button type="primary" plain :size="size">{{ title }}</el-button>
-      </slot>
+    <slot>
+      <el-button
+        type="primary"
+        plain
+        :size="size"
+      >
+        {{ title }}
+      </el-button>
+    </slot>
   </router-link>
 </template>
 <script>

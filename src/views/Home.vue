@@ -1,64 +1,74 @@
 <template>
-  <el-row :gutter="20">
-    <el-col
-      :lg="4"
-      :md="8"
-      :sm="12"
-    >
-      <VFilter @onFiltered="fetchData(1, $event)" />
-    </el-col>
-    <el-col
-      v-loading.lock="loading"
-      :lg="20"
-      :md="16"
-      :sm="12"
-      class="wrapper"
-    >
-      <el-row
-        :gutter="20"
+  <ApolloQuery
+    v-slot="{ result: { data, error }, isLoading }"
+    :variables="{ page, filter }"
+    :query="require('@/graphql/query/characters.gql')"
+  >
+    <el-row :gutter="20">
+      <el-col
+        :lg="4"
+        :md="8"
+        :sm="12"
       >
-        <el-col
-          v-for="character in characters"
-          :key="character.id"
-          :xs="24"
-          :sm="12"
-          :md="8"
-          :lg="6"
-          :xl="6"
+        <VFilter @onFiltered="fetchData(1, $event)" />
+      </el-col>
+
+      <el-col
+        v-loading.lock="isLoading"
+        :lg="20"
+        :md="16"
+        :sm="12"
+        class="wrapper"
+      >
+        <el-row
+          v-if="data && data.characters"
+          :gutter="20"
         >
-          <CharacterCard :character="character" />
-        </el-col>
-      </el-row>
-      <el-row
-        type="flex"
-        justify="center"
-      >
-        <el-pagination
-          v-show="pagination.pages"
-          background
-          layout="prev, pager, next"
-          :page-count="pagination.pages"
-          :current-page="pagination.page"
-          @current-change="fetchData($event, filter)"
-          @prev-click="fetchData($event, filter)"
-          @next-click="fetchData($event, filter)"
-        />
+          <el-col
+            v-for="character in data.characters.results"
+            :key="character.id"
+            :xs="24"
+            :sm="12"
+            :md="8"
+            :lg="6"
+            :xl="6"
+          >
+            <CharacterCard :character="character" />
+          </el-col>
+        </el-row>
+        <h4
+          v-else-if="!isLoading"
+          class="text-center"
+        >
+          No results
+        </h4>
+        <el-row
+          v-if="data && data.characters"
+          type="flex"
+          justify="center"
+        >
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :page-count="data.characters.info.pages"
+            :current-page="page"
+            @current-change="fetchData($event, filter)"
+            @prev-click="fetchData($event, filter)"
+            @next-click="fetchData($event, filter)"
+          />
+        </el-row>
         <el-backtop
           ref="backtop"
           target=".wrapper"
         />
-      </el-row>
-    </el-col>
-  </el-row>
+      </el-col>
+    </el-row>
+  </ApolloQuery>
 </template>
 
 <script>
-import { GraphQLApi } from '@/api/main'
 import CharacterCard from '@/components/character/CharacterCard.vue'
 import VFilter from '@/components/VFilter.vue'
-import { charactersQuery } from '@/graphql/query/characters.gql'
-import { print } from 'graphql/language/printer'
-import { apiErrorHandler } from '@/utils/helpers/apiErrorHandler'
 export default {
   name: 'CharactersPage',
   components: {
@@ -67,46 +77,17 @@ export default {
   },
   data () {
     return {
-      characters: [],
       filter: {},
-      pagination: {
-        page: 1
-      },
-      loading: false
+      page: 1
     }
-  },
-  created () {
-    this.fetchData()
   },
   methods: {
     async fetchData (page = 1, filter = {}) {
-      this.filter = filter
-      try {
-        this.loading = true
-        const { data } = await GraphQLApi.request({
-          query: print(charactersQuery),
-          variables: {
-            page,
-            filter
-          }
-        })
-
-        if (data.errors) {
-          apiErrorHandler.call(this, data.errors)
-          this.characters = []
-          this.pagination = { page: 1 }
-          return false
-        }
-
-        const { results, info } = data.data.characters
-        this.characters = results
-        this.pagination = { ...info, page }
+      this.filter = { ...filter }
+      this.page = page
+      this.$nextTick(() => {
         this.$refs.backtop.scrollToTop()
-      } catch (error) {
-        console.log('error', error)
-      } finally {
-        this.loading = false
-      }
+      })
     }
   }
 }
