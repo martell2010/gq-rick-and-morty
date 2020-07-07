@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import '@/plugins/element-ui.js'
+import '@/plugins/sentry.js'
 import { createProvider } from '@/plugins/vue-apollo'
 
 Vue.config.productionTip = false
