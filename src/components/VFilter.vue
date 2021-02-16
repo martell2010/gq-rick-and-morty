@@ -1,8 +1,5 @@
 <template>
-  <el-form
-    ref="filterForm"
-    :model="form"
-  >
+  <el-form ref="filterForm" :model="form">
     <h3>Filter:</h3>
     <el-form-item prop="name">
       <el-input
@@ -20,7 +17,7 @@
         class="w-100"
       >
         <el-option
-          v-for="{value, label} in statusesList"
+          v-for="{ value, label } in statusesList"
           :key="value"
           :label="label"
           :value="value"
@@ -35,7 +32,7 @@
         class="w-100"
       >
         <el-option
-          v-for="{value, label} in speciesList"
+          v-for="{ value, label } in speciesList"
           :key="value"
           :label="label"
           :value="value"
@@ -50,62 +47,52 @@
         class="w-100"
       >
         <el-option
-          v-for="{value, label} in gendersList"
+          v-for="{ value, label } in gendersList"
           :key="value"
           :label="label"
           :value="value"
         />
       </el-select>
     </el-form-item>
-    <el-button
-      type="danger"
-      native-type="button"
-      plain
-      @click="resetForm"
-    >
+    <el-button type="danger" native-type="button" plain @click="resetForm">
       Reset
     </el-button>
-    <el-button
-      type="success"
-      native-type="button"
-      plain
-      @click="sendForm"
-    >
+    <el-button type="success" native-type="button" plain @click="sendForm">
       Apply
     </el-button>
   </el-form>
 </template>
 <script>
-import { SPECIES, STATUSES, GENDERS } from '@/utils/constants'
+import { SPECIES, STATUSES, GENDERS } from "@/utils/constants";
 export default {
-  data () {
+  data() {
     return {
       form: {
-        name: '',
-        status: '',
-        species: '',
-        gender: ''
+        name: "",
+        status: "",
+        species: "",
+        gender: "",
       },
       speciesList: SPECIES,
       statusesList: STATUSES,
-      gendersList: GENDERS
-    }
+      gendersList: GENDERS,
+    };
   },
   methods: {
-    sendForm () {
-      this.$emit('onFiltered', this.form)
+    sendForm() {
+      this.$emit("onFiltered", this.form);
     },
-    resetForm () {
-      this.$refs.filterForm.resetFields()
+    resetForm() {
+      this.$refs.filterForm.resetFields();
       this.$nextTick(() => {
-        this.sendForm()
-      })
-    }
-  }
-}
+        this.sendForm();
+      });
+    },
+  },
+};
 </script>
 <style lang="scss">
-  .w-100{
-    width: 100%;
-  }
+.w-100 {
+  width: 100%;
+}
 </style>

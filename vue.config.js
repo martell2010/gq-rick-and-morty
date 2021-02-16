@@ -1,11 +1,11 @@
 module.exports = {
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     // Загрузчик GraphQL
     config.module
-      .rule('graphql')
+      .rule("graphql")
       .test(/\.(graphql|gql)$/)
-      .use('graphql-tag/loader')
-      .loader('graphql-tag/loader')
-      .end()
-  }
-}
+      .use("graphql-tag/loader")
+      .loader("graphql-tag/loader")
+      .end();
+  },
+};

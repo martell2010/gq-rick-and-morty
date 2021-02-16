@@ -1,12 +1,7 @@
 <template>
   <el-card :body-style="{ padding: '0px' }">
-    <el-image
-      :src="character.image"
-      fit="cover"
-      class="card-image"
-      lazy
-    />
-    <div style="padding: 14px;">
+    <el-image :src="character.image" fit="cover" class="card-image" lazy />
+    <div style="padding: 14px">
       <h4>{{ character.name }}</h4>
       <el-divider />
       <div class="text-right">
@@ -16,28 +11,28 @@
   </el-card>
 </template>
 <script>
-import MoreLink from '@/components/character/MoreLink.vue'
+import MoreLink from "@/components/character/MoreLink.vue";
 export default {
   components: {
-    MoreLink
+    MoreLink,
   },
   props: {
     character: {
       type: Object,
-      required: true
-    }
-  }
-}
+      required: true,
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
-  .card-image{
-    width:100%;
-    height:250px
-  }
-  .el-divider--horizontal{
-    margin: 14px 0;
-  }
-  .text-right{
-    text-align: right;
-  }
+.card-image {
+  width: 100%;
+  height: 250px;
+}
+.el-divider--horizontal {
+  margin: 14px 0;
+}
+.text-right {
+  text-align: right;
+}
 </style>
