@@ -13,5 +13,5 @@ enabled = true
   style_guide = "airbnb"
 
 [[transformers]]
-name = "prettier"
+name = "standardjs"
 enabled = true
