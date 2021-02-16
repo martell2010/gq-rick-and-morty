@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from 'axios'
 
 const $axios = axios.create({
-  baseURL: "https://rickandmortyapi.com/graphql",
+  baseURL: 'https://rickandmortyapi.com/graphql',
   headers: {
-    "Access-Control-Allow-Origin": "*",
-  },
-});
+    'Access-Control-Allow-Origin': '*'
+  }
+})
 
-export { $axios };
+export { $axios }
